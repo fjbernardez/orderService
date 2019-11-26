@@ -66,29 +66,6 @@ public class OrderService {
         AccountDto account = customerServiceClient.findAccountById(orderRequest.getAccountId()).orElseThrow(
                 ()-> new AccountNotFoundExeption(ExeptionMessagesEnum.ACCOUNT_NOT_FOUND.getValue()) );
 
-/* consumo de servicios - CustomerServiceClient
-
-        //instancio dummyAcount
-        AccountDto dummyAccount  = customerServiceClient.createDummyAccount();
-
-        //post cuenta dummy
-        //dummyAcount = customerServiceClient.createAccount(dummyAcount);
-        dummyAccount = customerServiceClient.createAccountBody(dummyAccount);
-        log.info("Response (antesDeActualizar): " + dummyAccount.getAddress().getZipCode() );
-
-        //Ahora put. Para eso primero genero una modificacion, para que corroborar la actualizacion
-        dummyAccount.getAddress().setZipCode("zipCodeModified");
-        customerServiceClient.updateAccount(dummyAccount);
-        //invoco el objeto para ver la actualizacion.
-        //NOTA: findAccountById(orderRequest.getAccountId()) se mantiene por que busco verificar la actualizacion
-        AccountDto updateAccount = customerServiceClient.findAccountById(orderRequest.getAccountId());
-        //logeo el resultado
-        //log.info("Response (actualizado): " + updateAccount.getAddress().getZipCode() );
-        log.info("Response (actualizado):\n" + updateAccount.toString() );
-
-        //Ahora elimino la cuenta creada
-        customerServiceClient.deleteAccount(dummyAccount);
-*/
         Order response = initOrder(orderRequest);
 
         return jpaOrderDao.save(response);
@@ -97,47 +74,11 @@ public class OrderService {
     public List<Order> findAllOrders(){
 
         return jpaOrderDao.findAll();
-
-
-
-//        List<Order> orderList = new ArrayList();
-//
-//        Order response = new Order();
-//        response.setAccountId("999819");
-//        response.setOrderId("11123");
-//        //response.setStatus("pending");
-//        response.setStatus(OrderStatus.PENDING);
-//        response.setTotalAmount(100.00);
-//        response.setTotalTax(10.00);
-//        response.setTransactionDate(new Date());
-//
-//        Order response02 = new Order();
-//        response02.setAccountId("999819");
-//        response02.setOrderId("11124");
-//        //response02.setStatus("pending");
-//        response02.setStatus(OrderStatus.PENDING);
-//        response02.setTotalAmount(120.00);
-//        response02.setTotalTax(12.00);
-//        response02.setTransactionDate(new Date());
-//
-////      agrego a la lista
-//        orderList.add(response);
-//        orderList.add(response02);
-//        return orderList;
     }
 
     public Order findOrderById (String orderId){
 
         return jpaOrderDao.findByOrderId(orderId).orElseThrow(
                 () -> new OrderIdNotFoundExeption(ExeptionMessagesEnum.ORDER_ID_NOT_FOUND.getValue()) );
-//        Order response = new Order();
-//        response.setAccountId("999819");
-//        response.setOrderId(orderId);
-//        //response.setStatus("pending");|
-//        response.setStatus(OrderStatus.PENDING);
-//        response.setTotalAmount(100.00);
-//        response.setTotalTax(10.00);
-//        response.setTransactionDate(new Date());
-//        return response;
     }
 }

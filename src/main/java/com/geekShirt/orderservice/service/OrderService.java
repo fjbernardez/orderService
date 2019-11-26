@@ -127,6 +127,7 @@ public class OrderService {
     }
 
     public Order findOrderById (String orderId){
+        if (true)
 
         return jpaOrderDao.findByOrderId(orderId).orElseThrow(
                 () -> new OrderIdNotFoundExeption(ExeptionMessagesEnum.ORDER_ID_NOT_FOUND.getValue()) );

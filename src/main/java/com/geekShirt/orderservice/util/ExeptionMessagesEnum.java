@@ -1,0 +1,17 @@
+package com.geekShirt.orderservice.util;
+
+public enum ExeptionMessagesEnum {
+    ACCOUNT_NOT_FOUND ("mensaje asociado al enum: ACCOUNT_NOT_FOUND."),
+    INCORRECT_REQUEST_EMTY_ITEMS_ORDER("mensaje asociado al enum:INCORRECT_REQUEST_EMTY_ITEMS_ORDER."),
+    ORDER_ID_NOT_FOUND ("mensaje asociado al enum:ORDER_ID_NOT_FOUND.");
+
+    ExeptionMessagesEnum(String msj ){
+        value = msj;
+    }
+
+    private final String value ;
+
+    public String getValue() {
+        return value;
+    }
+}

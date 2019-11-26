@@ -76,9 +76,13 @@ public class OrderService {
         return jpaOrderDao.findAll();
     }
 
-    public Order findOrderById (String orderId){
-
+    public Order findOrderById (String orderId) {
         return jpaOrderDao.findByOrderId(orderId).orElseThrow(
                 () -> new OrderIdNotFoundExeption(ExeptionMessagesEnum.ORDER_NOT_FOUND.getValue()) );
+    }
+
+    public Order findById (long id){
+        return jpaOrderDao.findById(id).orElseThrow(
+                () ->new OrderIdNotFoundExeption(ExeptionMessagesEnum.ORDER_NOT_FOUND.getValue()) );
     }
 }

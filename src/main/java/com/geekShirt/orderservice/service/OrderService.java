@@ -127,14 +127,13 @@ public class OrderService {
     }
 
     public Order findOrderById (String orderId){
-        if (true)
 
         return jpaOrderDao.findByOrderId(orderId).orElseThrow(
                 () -> new OrderIdNotFoundExeption(ExeptionMessagesEnum.ORDER_ID_NOT_FOUND.getValue()) );
 //        Order response = new Order();
 //        response.setAccountId("999819");
 //        response.setOrderId(orderId);
-//        //response.setStatus("pending");
+//        //response.setStatus("pending");|
 //        response.setStatus(OrderStatus.PENDING);
 //        response.setTotalAmount(100.00);
 //        response.setTotalTax(10.00);

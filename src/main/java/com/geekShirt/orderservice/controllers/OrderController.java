@@ -46,4 +46,11 @@ public class OrderController {
         Order order = orderService.createOrder(payLoad);
         return new ResponseEntity<>(converter.convertEntityToDto(order),HttpStatus.OK);
     }
+
+    @ApiOperation(value = "Retorna orden basado en ID", notes = "Notas...")
+    @GetMapping(value = "order/generated/{orderId}")
+    public ResponseEntity<OrderResponse> findByGeneratedId(@PathVariable long id){
+        Order order = orderService.findById(id);
+        return new ResponseEntity<>(converter.convertEntityToDto(order),HttpStatus.OK);
+    }
 }

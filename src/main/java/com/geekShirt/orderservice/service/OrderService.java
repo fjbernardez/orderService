@@ -9,6 +9,7 @@ import com.geekShirt.orderservice.entities.Order;
 import com.geekShirt.orderservice.entities.OrderDetail;
 import com.geekShirt.orderservice.exception.AccountNotFoundExeption;
 import com.geekShirt.orderservice.exception.OrderIdNotFoundExeption;
+import com.geekShirt.orderservice.util.Constants;
 import com.geekShirt.orderservice.util.ExeptionMessagesEnum;
 import com.geekShirt.orderservice.util.OrderStatus;
 import com.geekShirt.orderservice.util.OrderValidator;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -46,18 +48,19 @@ public class OrderService {
                 .price(item.getPrice())
                 .quantity(item.getQuantity())
                 .upc(item.getUpc())
-                .tax(item.getQuantity() * item.getPrice())
+                .tax(item.getQuantity() * item.getPrice() * Constants.TAX_IMPORT)
                 .order(orderObj).build())
                 .collect(Collectors.toList());
 
         orderObj.setDetails(orderDetails);
         orderObj.setTotalAmount(orderDetails.stream().mapToDouble(OrderDetail::getPrice).sum());
-        orderObj.setTotalTax(orderObj.getTotalAmount() * 0.16);
+        orderObj.setTotalTax(orderObj.getTotalAmount() * Constants.TAX_IMPORT);
         orderObj.setTransactionDate(new Date());
 
         return orderObj;
     }
-
+    /*@Transactional es nacesario para INSERT UPDATE DELETE al repositorio*/
+    @Transactional
     public Order createOrder(OrderRequest orderRequest) {
         //valido orderRequest recibido
         OrderValidator.validateOrder(orderRequest);

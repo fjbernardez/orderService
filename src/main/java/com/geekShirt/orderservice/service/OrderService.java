@@ -49,7 +49,8 @@ public class OrderService {
                 .quantity(item.getQuantity())
                 .upc(item.getUpc())
                 .tax(item.getQuantity() * item.getPrice() * Constants.TAX_IMPORT)
-                .order(orderObj).build())
+//                .order(orderObj).build())
+                .build())
                 .collect(Collectors.toList());
 
         orderObj.setDetails(orderDetails);

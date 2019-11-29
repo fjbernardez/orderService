@@ -10,10 +10,10 @@ import java.util.List;
 @Data
 @Table(name= "ORDERS")
 @Entity
-public class Order {
+public class Order extends CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column (name = "ORDER_ID")
     private String orderId;
     @Column (name= "STATUS")
@@ -31,6 +31,4 @@ public class Order {
     //"order" debe ser una atributo valida en OrderDetail.class
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "order")
     private List<OrderDetail> details;
-
-
 }

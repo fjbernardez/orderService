@@ -9,6 +9,7 @@ import com.geekShirt.orderservice.entities.Order;
 import com.geekShirt.orderservice.entities.OrderDetail;
 import com.geekShirt.orderservice.exception.AccountNotFoundExeption;
 import com.geekShirt.orderservice.exception.OrderIdNotFoundExeption;
+import com.geekShirt.orderservice.repositories.OrderRepository;
 import com.geekShirt.orderservice.util.Constants;
 import com.geekShirt.orderservice.util.ExeptionMessagesEnum;
 import com.geekShirt.orderservice.util.OrderStatus;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -35,6 +37,9 @@ public class OrderService {
     @Autowired
     private JpaOrderDAO jpaOrderDao;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
 
     private Order initOrder (OrderRequest orderRequest) {
         Order orderObj = new Order () ;
@@ -49,7 +54,6 @@ public class OrderService {
                 .quantity(item.getQuantity())
                 .upc(item.getUpc())
                 .tax(item.getQuantity() * item.getPrice() * Constants.TAX_IMPORT)
-//                .order(orderObj).build())
                 .build())
                 .collect(Collectors.toList());
 
@@ -60,6 +64,7 @@ public class OrderService {
 
         return orderObj;
     }
+
     /*@Transactional es nacesario para INSERT UPDATE DELETE al repositorio*/
     @Transactional
     public Order createOrder(OrderRequest orderRequest) {
@@ -72,7 +77,7 @@ public class OrderService {
 
         Order response = initOrder(orderRequest);
 
-        return jpaOrderDao.save(response);
+        return orderRepository.save(response);
     }
 
     public List<Order> findAllOrders(){
@@ -81,12 +86,23 @@ public class OrderService {
     }
 
     public Order findOrderById (String orderId) {
-        return jpaOrderDao.findByOrderId(orderId).orElseThrow(
-                () -> new OrderIdNotFoundExeption(ExeptionMessagesEnum.ORDER_NOT_FOUND.getValue()) );
+
+        Optional <Order> order = Optional.ofNullable(orderRepository.findOrderByOrderId(orderId));
+        return order.orElseThrow(
+                ()-> new OrderIdNotFoundExeption(ExeptionMessagesEnum.ORDER_NOT_FOUND.getValue()));
     }
 
     public Order findById (long id){
-        return jpaOrderDao.findById(id).orElseThrow(
+
+        Optional <Order> order = orderRepository.findById(id);
+        return order.orElseThrow(
+                () ->new OrderIdNotFoundExeption(ExeptionMessagesEnum.ORDER_NOT_FOUND.getValue()) );
+    }
+
+    public List<Order> findOrderByAccountId (String accountId){
+
+        Optional <List<Order>> orders = Optional.ofNullable(orderRepository.findOrdersByAccountId(accountId));
+        return orders.orElseThrow(
                 () ->new OrderIdNotFoundExeption(ExeptionMessagesEnum.ORDER_NOT_FOUND.getValue()) );
     }
 }

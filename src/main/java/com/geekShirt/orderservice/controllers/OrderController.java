@@ -49,8 +49,16 @@ public class OrderController {
 
     @ApiOperation(value = "Retorna orden basado en ID", notes = "Notas...")
     @GetMapping(value = "order/generated/{orderId}")
-    public ResponseEntity<OrderResponse> findByGeneratedId(@PathVariable long id){
-        Order order = orderService.findById(id);
+    public ResponseEntity<OrderResponse> findByGeneratedId(@PathVariable long orderId) {
+        Order order = orderService.findById(orderId);
         return new ResponseEntity<>(converter.convertEntityToDto(order),HttpStatus.OK);
     }
+
+    @ApiOperation(value = "Retorna ordenes basado en account ID", notes = "Notas...")
+    @GetMapping(value = "order/account/{accountId}")
+    public ResponseEntity<List<OrderResponse>> findOrdersByAccountId (@PathVariable String accountId) {
+        List <Order> orders = orderService.findOrderByAccountId(accountId);
+        return new ResponseEntity<>(converter.convertEntityToDto(orders),HttpStatus.OK);
+    }
+
 }

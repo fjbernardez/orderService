@@ -1,5 +1,6 @@
 package com.geekShirt.orderservice.entities;
 
+import com.geekShirt.orderservice.util.OrderPaymentStatus;
 import com.geekShirt.orderservice.util.OrderStatus;
 import lombok.Data;
 
@@ -25,8 +26,16 @@ public class Order extends CommonEntity {
     private double totalAmount;
     @Column (name = "TOTAL_TAX")
     private double totalTax;
+    @Column (name = "TOTAL_AMOUNT_TAX")
+    private double totalAmountTax;
+
     @Column (name = "TRANSACTION_DATE")
     private Date transactionDate;
+
+    @Column(name = "PAYMENT_STATUS")
+    @Enumerated(value = EnumType.STRING)
+    private OrderPaymentStatus paymentStatus;
+
     //genero relacion entre las entidades Order y OrderDetail. mappedBy fgenera una relacion bidireccional.
     //"order" debe ser una atributo valida en OrderDetail.class
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "order")

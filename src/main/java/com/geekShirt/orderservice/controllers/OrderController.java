@@ -3,6 +3,7 @@ package com.geekShirt.orderservice.controllers;
 import com.geekShirt.orderservice.dto.OrderRequest;
 import com.geekShirt.orderservice.dto.OrderResponse;
 import com.geekShirt.orderservice.entities.Order;
+import com.geekShirt.orderservice.exception.PaymentNotAcceptedException;
 import com.geekShirt.orderservice.service.OrderService;
 import com.geekShirt.orderservice.util.EntityDtoConverter;
 import io.swagger.annotations.Api;
@@ -42,7 +43,7 @@ public class OrderController {
 
     @ApiOperation(value = "Crea una orden", notes = "notas...")
     @PostMapping(value = "order/create")
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest payLoad) {
+    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest payLoad) throws PaymentNotAcceptedException {
         Order order = orderService.createOrder(payLoad);
         return new ResponseEntity<>(converter.convertEntityToDto(order),HttpStatus.OK);
     }
@@ -60,5 +61,4 @@ public class OrderController {
         List <Order> orders = orderService.findOrderByAccountId(accountId);
         return new ResponseEntity<>(converter.convertEntityToDto(orders),HttpStatus.OK);
     }
-
 }

@@ -3,6 +3,7 @@ package com.geekShirt.orderservice.handler;
 import com.geekShirt.orderservice.exception.AccountNotFoundExeption;
 import com.geekShirt.orderservice.exception.IncorrectOrderRequestException;
 import com.geekShirt.orderservice.exception.OrderServiceExceptionResponse;
+import com.geekShirt.orderservice.exception.PaymentNotAcceptedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.IncorrectResultSetColumnCountException;
@@ -37,6 +38,12 @@ public class OrderServicesExceptionHandler extends ResponseEntityExceptionHandle
     public ResponseEntity<Object> accountNotFoundExeption (Exception exception, WebRequest request) {
         OrderServiceExceptionResponse response = new OrderServiceExceptionResponse(exception.getMessage(),
                 request.getDescription(false), HttpStatus.NOT_FOUND, LocalDateTime.now() );
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @ExceptionHandler(PaymentNotAcceptedException.class)
+    public ResponseEntity<Object> handlePaymentNotAcceptedResourceNotFound(PaymentNotAcceptedException exception, WebRequest request) {
+        OrderServiceExceptionResponse response = new OrderServiceExceptionResponse(exception.getMessage(), request.getDescription(false), HttpStatus.NOT_FOUND, LocalDateTime.now());
         return new ResponseEntity<>(response, response.getStatus());
     }
 }

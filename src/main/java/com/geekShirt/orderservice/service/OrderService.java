@@ -1,28 +1,22 @@
 package com.geekShirt.orderservice.service;
 
 import com.geekShirt.orderservice.client.CustomerServiceClient;
+import com.geekShirt.orderservice.client.InventoryServiceClient;
 import com.geekShirt.orderservice.dao.JpaOrderDAO;
 import com.geekShirt.orderservice.dto.*;
-import com.geekShirt.orderservice.dto.OrderResponse;
 import com.geekShirt.orderservice.entities.Order;
 import com.geekShirt.orderservice.entities.OrderDetail;
 import com.geekShirt.orderservice.exception.AccountNotFoundExeption;
 import com.geekShirt.orderservice.exception.OrderIdNotFoundExeption;
 import com.geekShirt.orderservice.exception.PaymentNotAcceptedException;
+import com.geekShirt.orderservice.producer.ShippingOrderProducer;
 import com.geekShirt.orderservice.repositories.OrderRepository;
 import com.geekShirt.orderservice.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 
-import javax.transaction.Transactional;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 
@@ -42,6 +36,15 @@ public class OrderService {
 
     @Autowired
     private PaymentProcessorService paymentService;
+
+    @Autowired
+    private InventoryServiceClient inventoryClient;
+
+    @Autowired
+    private ShippingOrderProducer shipmentMessageProducer;
+
+    @Autowired
+    private OrderMailService mailService;
 
 
     private Order initOrder (OrderRequest orderRequest) {
@@ -70,7 +73,6 @@ public class OrderService {
     }
 
     /*@Transactional es nacesario para INSERT UPDATE DELETE al repositorio*/
-    @Transactional
     public Order createOrder(OrderRequest orderRequest) throws PaymentNotAcceptedException {
         //valido orderRequest recibido
         OrderValidator.validateOrder(orderRequest);
@@ -94,6 +96,12 @@ public class OrderService {
             orderRepository.save(response);
             throw new PaymentNotAcceptedException(ExeptionMessagesEnum.PAYMENT_ADDED_NOT_ACCEPTED.getValue());
         }
+
+        log.info("Updating Inventory: {}", orderRequest.getItems());
+        inventoryClient.updateInventory(orderRequest.getItems());
+
+        log.info("Sending Request to Shipping Service.");
+        shipmentMessageProducer.send(response.getOrderId(), account);
 
         return orderRepository.save(response);
     }
@@ -122,5 +130,20 @@ public class OrderService {
         Optional <List<Order>> orders = Optional.ofNullable(orderRepository.findOrdersByAccountId(accountId));
         return orders.orElseThrow(
                 () ->new OrderIdNotFoundExeption(ExeptionMessagesEnum.ORDER_NOT_FOUND.getValue()) );
+    }
+
+    public void updateShipmentOrder(ShipmentOrderResponse response) {
+        try {
+            Order order = findOrderById(response.getOrderId());
+            order.setStatus(OrderStatus.valueOf(response.getShippingStatus()));
+            orderRepository.save(order);
+            mailService.sendEmail(order, response);
+        }
+        catch(OrderIdNotFoundExeption orderNotFound) {
+            log.info("The Following Order was not found: {} with tracking Id: {}", response.getOrderId(), response.getTrackingId());
+        }
+        catch(Exception e) {
+            log.info("An error occurred sending email: " + e.getMessage());
+        }
     }
 }

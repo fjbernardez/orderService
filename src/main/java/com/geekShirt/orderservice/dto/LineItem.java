@@ -2,9 +2,11 @@ package com.geekShirt.orderservice.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 @ApiModel(description = "Descripcion de los item a incluir en una orden")
 public class LineItem {
     @ApiModelProperty(notes = "UPC (universal Product Code)",example = "1215454",required = true, position = 0)

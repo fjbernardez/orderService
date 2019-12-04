@@ -27,7 +27,8 @@ public class PaymentServiceClient {
         Confirmation confirmation = restTemplate.postForObject(
                 serviceConfig.getPaymentServiceUrl(), request, Confirmation.class);
 
-        Confirmation confirmation1 = confirmation;
+        Confirmation
+                confirmation1 = confirmation;
         return confirmation1;
     }
 }

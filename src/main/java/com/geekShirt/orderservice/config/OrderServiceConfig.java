@@ -33,7 +33,8 @@ public class OrderServiceConfig {
     @Qualifier(value = "outbound")
     @Bean
     public Queue inboundShipmentOrder() {
-        return new Queue("INBOUND_SHIPMENT_ORDER", false, false, false);
+        return new Queue
+                ("INBOUND_SHIPMENT_ORDER", false, false, false);
     }
 
     @Bean

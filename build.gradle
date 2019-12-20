@@ -27,6 +27,7 @@ dependencies {
 	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
 	compile 'org.springframework.boot:spring-boot-starter-amqp:2.1.6.RELEASE'
 	compile 'org.springframework.boot:spring-boot-starter-mail'
+	//template para enviar en los correos
 	compile 'org.springframework.boot:spring-boot-starter-freemarker'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'

@@ -12,7 +12,6 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class ShipmentOrderResponse implements Serializable {
     @JsonProperty("orderId")
     private String orderId;
@@ -20,11 +19,11 @@ public class ShipmentOrderResponse implements Serializable {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("receiptEmail")
-    private String receiptEmail;
-
     @JsonProperty("trackingId")
     private String trackingId;
+
+    @JsonProperty("receiptEmail")
+    private String receiptEmail;
 
     @JsonProperty("shippingStatus")
     private String shippingStatus;

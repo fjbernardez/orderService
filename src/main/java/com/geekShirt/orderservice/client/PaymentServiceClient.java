@@ -24,8 +24,7 @@ public class PaymentServiceClient {
     }
 
     public Confirmation authorize(PaymentRequest request) {
-        Confirmation confirmation = restTemplate.postForObject(
-                serviceConfig.getPaymentServiceUrl(), request, Confirmation.class);
+        Confirmation confirmation = restTemplate.postForObject(serviceConfig.getPaymentServiceUrl(), request, Confirmation.class);
 
         Confirmation
                 confirmation1 = confirmation;

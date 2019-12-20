@@ -13,9 +13,11 @@ import com.geekShirt.orderservice.producer.ShippingOrderProducer;
 import com.geekShirt.orderservice.repositories.OrderRepository;
 import com.geekShirt.orderservice.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.engine.jdbc.connections.internal.ConnectionProviderInitiator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,6 +42,7 @@ public class OrderService {
     @Autowired
     private InventoryServiceClient inventoryClient;
 
+    /*tomo el bean para poder realizar el envio de los mensajes por rabbitMQ*/
     @Autowired
     private ShippingOrderProducer shipmentMessageProducer;
 
@@ -73,6 +76,7 @@ public class OrderService {
     }
 
     /*@Transactional es nacesario para INSERT UPDATE DELETE al repositorio*/
+    @Transactional
     public Order createOrder(OrderRequest orderRequest) throws PaymentNotAcceptedException {
         //valido orderRequest recibido
         OrderValidator.validateOrder(orderRequest);
@@ -98,8 +102,10 @@ public class OrderService {
         }
 
         log.info("Updating Inventory: {}", orderRequest.getItems());
+
         inventoryClient.updateInventory(orderRequest.getItems());
 
+        /*envio a INBOUND_SHIPMENT_ORDER - RabbitMQ*/
         log.info("Sending Request to Shipping Service.");
         shipmentMessageProducer.send(response.getOrderId(), account);
 
@@ -132,6 +138,7 @@ public class OrderService {
                 () ->new OrderIdNotFoundExeption(ExeptionMessagesEnum.ORDER_NOT_FOUND.getValue()) );
     }
 
+    /*metodo contenido en handler de recepcion de mensajes*/
     public void updateShipmentOrder(ShipmentOrderResponse response) {
         try {
             Order order = findOrderById(response.getOrderId());

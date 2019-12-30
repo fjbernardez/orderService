@@ -15,6 +15,7 @@ import com.geekShirt.orderservice.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.engine.jdbc.connections.internal.ConnectionProviderInitiator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -112,6 +113,7 @@ public class OrderService {
         return orderRepository.save(response);
     }
 
+    @Cacheable(value = "orders")
     public List<Order> findAllOrders(){
 
         return jpaOrderDao.findAll();
@@ -131,6 +133,15 @@ public class OrderService {
                 () ->new OrderIdNotFoundExeption(ExeptionMessagesEnum.ORDER_NOT_FOUND.getValue()) );
     }
 
+    // **********************************CACHE***************************************************
+    /*
+    Esta anotacion indica que este acceso a la base de datos opera con memoria cache.
+    Los parametros definen lo valores de un mapa que administrara, en este caso, Redis.
+    Nombre del mapa es la propiedad value="ordersAccount", y el parametro accountId es
+    la key="#accountId" del mapa.
+    Recibi el String accountId y retorna el valor del mapa, la List<Order>
+    */
+    @Cacheable(value = "ordersAccount", key = "#accountId")
     public List<Order> findOrderByAccountId (String accountId){
 
         Optional <List<Order>> orders = Optional.ofNullable(orderRepository.findOrdersByAccountId(accountId));

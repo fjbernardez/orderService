@@ -23,11 +23,11 @@ public class Order extends CommonEntity {
     @Column(name = "ACCOUND_ID")
     private String accountId;
     @Column (name = "TOTAL_AMOUNT")
-    private double totalAmount;
+    private Double totalAmount;
     @Column (name = "TOTAL_TAX")
-    private double totalTax;
+    private Double totalTax;
     @Column (name = "TOTAL_AMOUNT_TAX")
-    private double totalAmountTax;
+    private Double totalAmountTax;
 
     @Column (name = "TRANSACTION_DATE")
     private Date transactionDate;

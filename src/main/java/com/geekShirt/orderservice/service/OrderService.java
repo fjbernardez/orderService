@@ -13,7 +13,6 @@ import com.geekShirt.orderservice.producer.ShippingOrderProducer;
 import com.geekShirt.orderservice.repositories.OrderRepository;
 import com.geekShirt.orderservice.util.*;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.engine.jdbc.connections.internal.ConnectionProviderInitiator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -87,7 +86,6 @@ public class OrderService {
                 ()-> new AccountNotFoundExeption(ExeptionMessagesEnum.ACCOUNT_NOT_FOUND.getValue()) );
 
         Order response = initOrder(orderRequest);
-
         Confirmation confirmation = paymentService.processPayment(response, account);
 
         log.info("Payment Confirmation: {}", confirmation);

@@ -10,4 +10,5 @@ public class OrderDetailResponse {
     private double price;
     private double tax;
     private  String upc;
+    private double totalAmount;
 }

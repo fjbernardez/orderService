@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Getter
+@Data
 @ApiModel(description = "Esta clase representa una orden a ser procesada")
 public class OrderRequest {
     @NotNull
